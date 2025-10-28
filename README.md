@@ -361,11 +361,13 @@ For complete setup instructions and dashboard documentation, see [`grafana/READM
 
 ### Target Release: Q1 2026
 
-**Current Status:** v0.9.0 Beta  
+**Current Status:** v0.9.1  
 **Next Milestone:** v0.9.5 (Feature Complete Beta)  
 **v1.0 GA:** Q1 2026
 
-See `RELEASE_NOTES_v0.9.0.md` for detailed release information.
+See release notes:
+- `RELEASE_NOTES_v0.9.1.md` - Latest (Grafana Dashboards)
+- `RELEASE_NOTES_v0.9.0.md` - Initial Beta Release
 
 ## Contributing
 
@@ -382,7 +384,7 @@ Adrian Johnson <adrian207@gmail.com>
 
 ---
 
-**Platform Version:** 0.9.0 Beta  
+**Platform Version:** 0.9.1  
 **Last Updated:** October 28, 2025  
 **Author:** Adrian Johnson <adrian207@gmail.com>
 
