@@ -6,7 +6,7 @@ Author: Adrian Johnson <adrian207@gmail.com>
 Validates device compliance against security policies and baselines.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Dict, List
 
 from core.config import get_config
@@ -39,7 +39,7 @@ class ComplianceChecker:
         Returns:
             Dict containing compliance results
         """
-        check_start = datetime.utcnow()
+        check_start = datetime.now(UTC)
         
         checks = []
         violations = []
@@ -93,7 +93,7 @@ class ComplianceChecker:
                         "priority": check["severity"]
                     })
         
-        duration = (datetime.utcnow() - check_start).total_seconds() * 1000
+        duration = (datetime.now(UTC) - check_start).total_seconds() * 1000
         
         result = {
             "check_time": check_start.isoformat(),

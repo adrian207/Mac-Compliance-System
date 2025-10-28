@@ -312,6 +312,31 @@ actions:
 - Verify workflow is enabled
 - Examine orchestration engine logs
 
+## Roadmap to v1.0
+
+### Planned Features
+
+- [ ] **Automated Database Migration System** - Seamless database schema updates
+- [ ] **Pre-built Grafana Dashboards** - Ready-to-use monitoring dashboards
+- [ ] **Telemetry Agent Installer** - Simplified agent deployment to endpoints
+- [ ] **Advanced Behavioral Analytics** - Machine learning-based user behavior analysis
+- [ ] **Anomaly Detection** - AI-powered threat detection
+- [ ] **Additional Integration Connectors** - Support for more security tools
+- [ ] **Mobile App for Alerts** - iOS/Android app for security notifications
+- [ ] **SIEM Integration** - Splunk, Elastic Stack, and other SIEM connectors
+- [ ] **Custom Policy Builder** - Web UI for creating custom compliance policies
+- [ ] **Automated Remediation Workflows** - Self-healing security controls
+- [ ] **Enhanced Reporting** - Executive dashboards and compliance reports
+- [ ] **Multi-platform Support** - Windows and Linux endpoint support
+
+### Target Release: Q1 2026
+
+**Current Status:** v0.9.0 Beta  
+**Next Milestone:** v0.9.5 (Feature Complete Beta)  
+**v1.0 GA:** Q1 2026
+
+See `RELEASE_NOTES_v0.9.0.md` for detailed release information.
+
 ## Contributing
 
 Contributions are welcome. Please follow secure coding practices and include tests for new features.
@@ -327,7 +352,7 @@ Adrian Johnson <adrian207@gmail.com>
 
 ---
 
-**Platform Version:** 1.0.0  
+**Platform Version:** 0.9.0 Beta  
 **Last Updated:** October 28, 2025  
 **Author:** Adrian Johnson <adrian207@gmail.com>
 

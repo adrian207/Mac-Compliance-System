@@ -6,7 +6,7 @@ Author: Adrian Johnson <adrian207@gmail.com>
 Calculates comprehensive device risk scores based on multiple factors.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Dict, List, Optional, Tuple
 
 from core.config import get_config
@@ -66,7 +66,7 @@ class RiskAssessor:
         Returns:
             Dict containing risk score and detailed assessment
         """
-        assessment_start = datetime.utcnow()
+        assessment_start = datetime.now(UTC)
         
         # Calculate component scores
         security_posture_score, security_factors = self._assess_security_posture(telemetry)
@@ -107,7 +107,7 @@ class RiskAssessor:
         recommendations = self._generate_recommendations(all_factors)
         
         # Calculate assessment duration
-        duration = (datetime.utcnow() - assessment_start).total_seconds() * 1000
+        duration = (datetime.now(UTC) - assessment_start).total_seconds() * 1000
         
         assessment_result = {
             "assessment_time": assessment_start.isoformat(),
@@ -157,10 +157,10 @@ class RiskAssessor:
         security_status = telemetry.get("security_status", {})
         system_info = telemetry.get("system_info", {})
         
-        # OS version check (25%)
+        # OS version check (contributes to 100-point scale)
         os_version = system_info.get("os_version", "0.0")
         os_score = self._check_os_version(os_version)
-        scores.append(os_score * 0.25)
+        scores.append(os_score)
         
         if os_score > 50:
             factors.append({
@@ -178,9 +178,9 @@ class RiskAssessor:
         # Security tools check (25%)
         tools_score = 0
         
-        # FileVault
+        # FileVault (most critical - 40 points)
         if security_status.get("filevault_enabled") is False:
-            tools_score += 25
+            tools_score += 40
             factors.append({
                 "category": "security_posture",
                 "subcategory": "encryption",
@@ -193,65 +193,67 @@ class RiskAssessor:
                 "remediation_available": "automated",
             })
         
-        # Firewall
+        # Firewall (25 points)
         if security_status.get("firewall_enabled") is False:
-            tools_score += 15
+            tools_score += 25
             factors.append({
                 "category": "security_posture",
                 "subcategory": "network_security",
                 "factor_name": "Firewall Disabled",
                 "severity": "high",
-                "impact_score": 15,
+                "impact_score": 25,
                 "description": "System firewall is not enabled",
                 "current_value": "Disabled",
                 "expected_value": "Enabled",
                 "remediation_available": "automated",
             })
         
-        # Gatekeeper
+        # Gatekeeper (15 points)
         if security_status.get("gatekeeper_enabled") is False:
-            tools_score += 10
+            tools_score += 15
             factors.append({
                 "category": "security_posture",
                 "subcategory": "application_security",
                 "factor_name": "Gatekeeper Disabled",
                 "severity": "high",
-                "impact_score": 10,
+                "impact_score": 15,
                 "description": "Gatekeeper protection is disabled",
                 "current_value": "Disabled",
                 "expected_value": "Enabled",
                 "remediation_available": "automated",
             })
         
-        # SIP
+        # SIP (most critical - 40 points)
         if security_status.get("sip_enabled") is False:
-            tools_score += 20
+            tools_score += 40
             factors.append({
                 "category": "security_posture",
                 "subcategory": "system_security",
                 "factor_name": "SIP Disabled",
                 "severity": "critical",
-                "impact_score": 20,
+                "impact_score": 40,
                 "description": "System Integrity Protection is disabled",
                 "current_value": "Disabled",
                 "expected_value": "Enabled",
                 "remediation_available": "manual",
             })
         
-        scores.append(tools_score * 0.25)
+        # Cap at 100
+        tools_score = min(tools_score, 100)
+        scores.append(tools_score)
         
         # Authentication check (25%)
         auth_info = telemetry.get("authentication", {})
         auth_score = 0
         
         if auth_info.get("screen_lock_enabled") is False:
-            auth_score += 15
+            auth_score += 20
             factors.append({
                 "category": "security_posture",
                 "subcategory": "authentication",
                 "factor_name": "Screen Lock Disabled",
                 "severity": "medium",
-                "impact_score": 15,
+                "impact_score": 20,
                 "description": "Screen lock is not configured",
                 "current_value": "Disabled",
                 "expected_value": "Enabled with timeout",
@@ -259,20 +261,22 @@ class RiskAssessor:
             })
         
         if auth_info.get("password_required") is False:
-            auth_score += 20
+            auth_score += 30
             factors.append({
                 "category": "security_posture",
                 "subcategory": "authentication",
                 "factor_name": "No Password Required",
                 "severity": "critical",
-                "impact_score": 20,
+                "impact_score": 30,
                 "description": "Device does not require password",
                 "current_value": "Not Required",
                 "expected_value": "Required",
                 "remediation_available": "automated",
             })
         
-        scores.append(auth_score * 0.25)
+        # Cap at 100
+        auth_score = min(auth_score, 100)
+        scores.append(auth_score)
         
         # Network security check (25%)
         network_info = telemetry.get("network_info", {})
@@ -298,10 +302,11 @@ class RiskAssessor:
                     "remediation_available": "notification",
                 })
         
-        scores.append(network_score * 0.25)
+        scores.append(network_score)
         
-        # Calculate total security posture score
-        total_score = sum(scores)
+        # Calculate average security posture score (0-100 scale)
+        # Average the four component scores
+        total_score = sum(scores) / len(scores) if scores else 0
         
         return total_score, factors
     

@@ -6,7 +6,7 @@ Author: Adrian Johnson <adrian207@gmail.com>
 FastAPI-based REST API for the Zero Trust security platform.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Dict, List, Optional
 
 import uvicorn
@@ -66,7 +66,7 @@ async def health_check():
     """Health check endpoint."""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(UTC).isoformat()
     }
 
 

@@ -74,11 +74,20 @@ def test_integration_retry_logic():
     )
     
     with patch.object(integration.client, 'request') as mock_request:
-        # First two calls fail, third succeeds
+        # First two calls fail with HTTP error, third succeeds
+        import httpx
+        
+        # Create success response
+        success_response = Mock()
+        success_response.json.return_value = {"status": "success"}
+        success_response.status_code = 200
+        success_response.raise_for_status = Mock()
+        
+        # Configure side effects - first two fail, third succeeds
         mock_request.side_effect = [
-            Exception("Connection error"),
-            Exception("Connection error"),
-            Mock(json=lambda: {"status": "success"})
+            httpx.HTTPStatusError("Connection error", request=Mock(), response=Mock()),
+            httpx.HTTPStatusError("Connection error", request=Mock(), response=Mock()),
+            success_response
         ]
         
         result = integration.get("/test")
