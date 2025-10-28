@@ -1,0 +1,414 @@
+# Mac OS Zero Trust Endpoint Security Platform Configuration
+# Author: Adrian Johnson <adrian207@gmail.com>
+# 
+# Copy this file to config.yaml and customize for your environment
+
+# ============================================================================
+# Platform Settings
+# ============================================================================
+platform:
+  name: "Mac OS Zero Trust Security Platform"
+  version: "1.0.0"
+  environment: "production"  # development, staging, production
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  timezone: "UTC"
+
+# ============================================================================
+# Database Configuration
+# ============================================================================
+database:
+  type: "postgresql"
+  host: "localhost"
+  port: 5432
+  database: "zerotrust_security"
+  username: "zerotrust_user"
+  password: "CHANGE_ME_STRONG_PASSWORD"
+  pool_size: 20
+  max_overflow: 10
+  ssl_mode: "require"
+
+# ============================================================================
+# Redis Configuration (for task queue and caching)
+# ============================================================================
+redis:
+  host: "localhost"
+  port: 6379
+  password: "CHANGE_ME_REDIS_PASSWORD"
+  db: 0
+  ssl: false
+
+# ============================================================================
+# API Server Configuration
+# ============================================================================
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  access_log: true
+  cors_origins:
+    - "https://yourdomain.com"
+  api_key_header: "X-API-Key"
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100
+
+# ============================================================================
+# Kandji MDM Integration
+# ============================================================================
+kandji:
+  enabled: true
+  api_url: "https://api.kandji.io/api/v1"
+  api_token: "CHANGE_ME_KANDJI_API_TOKEN"
+  tenant_id: "your-tenant-id"
+  
+  # Sync settings
+  sync_interval_minutes: 15
+  device_inventory_sync: true
+  policy_sync: true
+  
+  # Automation settings
+  auto_deploy_policies: true
+  auto_remediate_compliance: true
+  
+  # Timeout settings
+  timeout_seconds: 30
+  retry_attempts: 3
+
+# ============================================================================
+# Zscaler Network Security Integration
+# ============================================================================
+zscaler:
+  enabled: true
+  cloud: "zscalerthree"  # zscaler, zscalerone, zscalertwo, zscalerthree
+  api_url: "https://admin.zscalerthree.net/api/v1"
+  username: "CHANGE_ME_ZSCALER_USERNAME"
+  password: "CHANGE_ME_ZSCALER_PASSWORD"
+  api_key: "CHANGE_ME_ZSCALER_API_KEY"
+  
+  # ZTNA settings
+  ztna_enabled: true
+  auto_revoke_tokens: true
+  
+  # Access policy settings
+  apply_policies_by_risk: true
+  high_risk_policy_id: "high-risk-policy-id"
+  medium_risk_policy_id: "medium-risk-policy-id"
+  low_risk_policy_id: "low-risk-policy-id"
+  
+  # Timeout settings
+  timeout_seconds: 30
+  retry_attempts: 3
+
+# ============================================================================
+# Seraphic Browser Security Integration
+# ============================================================================
+seraphic:
+  enabled: true
+  api_url: "https://api.seraphic.com/v1"
+  api_key: "CHANGE_ME_SERAPHIC_API_KEY"
+  organization_id: "your-org-id"
+  
+  # Policy settings
+  auto_apply_policies: true
+  isolation_on_high_risk: true
+  
+  # Timeout settings
+  timeout_seconds: 30
+  retry_attempts: 3
+
+# ============================================================================
+# Telemetry Collection Configuration
+# ============================================================================
+telemetry:
+  # Collection intervals
+  device_info_interval_minutes: 60
+  security_status_interval_minutes: 15
+  process_scan_interval_minutes: 30
+  network_scan_interval_minutes: 30
+  
+  # Data retention
+  raw_data_retention_days: 90
+  aggregated_data_retention_days: 365
+  
+  # Collection scope
+  collect_process_list: true
+  collect_network_connections: true
+  collect_installed_software: true
+  collect_security_events: true
+  collect_file_integrity: true
+  
+  # Performance limits
+  max_processes_tracked: 1000
+  max_network_connections_tracked: 500
+
+# ============================================================================
+# Risk Assessment Configuration
+# ============================================================================
+risk_assessment:
+  # Scoring weights (must sum to 100)
+  weights:
+    security_posture: 40
+    compliance: 30
+    behavioral: 20
+    threat_indicators: 10
+  
+  # Risk thresholds (0-100 scale)
+  thresholds:
+    critical: 90
+    high: 75
+    medium: 50
+    low: 25
+  
+  # Assessment frequency
+  continuous_assessment: true
+  assessment_interval_minutes: 5
+  
+  # Scoring factors
+  security_posture:
+    os_version_weight: 25
+    patch_level_weight: 25
+    security_tools_weight: 25
+    encryption_weight: 15
+    firewall_weight: 10
+  
+  compliance:
+    policy_adherence_weight: 40
+    configuration_drift_weight: 30
+    required_software_weight: 20
+    certificate_validity_weight: 10
+  
+  behavioral:
+    access_anomalies_weight: 40
+    network_behavior_weight: 30
+    login_patterns_weight: 20
+    file_changes_weight: 10
+  
+  threat_indicators:
+    malware_detections_weight: 40
+    suspicious_processes_weight: 30
+    network_threats_weight: 20
+    vulnerabilities_weight: 10
+
+# ============================================================================
+# Workflow Automation Configuration
+# ============================================================================
+workflows:
+  enabled: true
+  
+  # High risk device response
+  high_risk_response:
+    enabled: true
+    trigger_threshold: 75
+    actions:
+      - type: "zscaler_revoke_token"
+        enabled: true
+      - type: "force_mfa"
+        enabled: true
+      - type: "network_quarantine"
+        enabled: true
+      - type: "alert_soc"
+        enabled: true
+      - type: "create_incident"
+        enabled: true
+  
+  # Non-compliant device remediation
+  compliance_remediation:
+    enabled: true
+    trigger_violations: 3
+    actions:
+      - type: "deploy_corrective_policies"
+        enabled: true
+        platform: "kandji"
+      - type: "restrict_network"
+        enabled: true
+      - type: "notify_user"
+        enabled: true
+      - type: "escalate_after_hours"
+        enabled: true
+        hours: 24
+  
+  # Zero Trust access enforcement
+  zero_trust_access:
+    enabled: true
+    trigger: "new_device_connection"
+    actions:
+      - type: "verify_enrollment"
+        enabled: true
+      - type: "validate_posture"
+        enabled: true
+      - type: "apply_conditional_access"
+        enabled: true
+      - type: "enable_monitoring"
+        enabled: true
+  
+  # Automated patching
+  auto_patching:
+    enabled: true
+    trigger: "critical_vulnerability_detected"
+    grace_period_hours: 24
+    actions:
+      - type: "deploy_patches"
+        enabled: true
+        platform: "kandji"
+      - type: "verify_installation"
+        enabled: true
+      - type: "reboot_if_required"
+        enabled: true
+        user_notification: true
+
+# ============================================================================
+# Mac OS Hardening Policies
+# ============================================================================
+hardening:
+  # OS requirements
+  minimum_os_version: "13.0"  # macOS Ventura
+  require_latest_patches: true
+  patch_age_threshold_days: 30
+  
+  # Security requirements
+  require_filevault: true
+  require_firewall: true
+  require_gatekeeper: true
+  require_sip: true  # System Integrity Protection
+  require_secure_boot: true
+  
+  # Authentication requirements
+  require_password: true
+  min_password_length: 12
+  require_complex_password: true
+  max_password_age_days: 90
+  require_screen_lock: true
+  screen_lock_timeout_minutes: 10
+  require_touch_id_or_face_id: false
+  
+  # Application control
+  allowed_kernel_extensions: []
+  blocked_applications: []
+  require_application_signatures: true
+  
+  # Network security
+  disable_guest_account: true
+  disable_automatic_login: true
+  require_admin_password_for_system_preferences: true
+  
+  # Audit and logging
+  enable_audit_logs: true
+  enable_firewall_logging: true
+  log_retention_days: 180
+
+# ============================================================================
+# Monitoring and Alerting Configuration
+# ============================================================================
+monitoring:
+  # Metrics collection
+  prometheus_enabled: true
+  prometheus_port: 9090
+  
+  # Health checks
+  health_check_interval_seconds: 60
+  
+  # Alerting channels
+  alerts:
+    email:
+      enabled: true
+      smtp_host: "smtp.gmail.com"
+      smtp_port: 587
+      smtp_username: "alerts@yourdomain.com"
+      smtp_password: "CHANGE_ME_SMTP_PASSWORD"
+      from_address: "alerts@yourdomain.com"
+      to_addresses:
+        - "soc@yourdomain.com"
+    
+    slack:
+      enabled: false
+      webhook_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+      channel: "#security-alerts"
+    
+    pagerduty:
+      enabled: false
+      integration_key: "CHANGE_ME_PAGERDUTY_KEY"
+    
+    webhook:
+      enabled: false
+      url: "https://your-webhook-endpoint.com/alerts"
+      headers:
+        Authorization: "Bearer YOUR_TOKEN"
+  
+  # Alert rules
+  alert_rules:
+    - name: "high_risk_device_detected"
+      condition: "device_risk_score > 75"
+      severity: "high"
+      channels: ["email", "slack"]
+    
+    - name: "critical_vulnerability"
+      condition: "critical_vulnerability_count > 0"
+      severity: "critical"
+      channels: ["email", "pagerduty"]
+    
+    - name: "mass_compliance_failure"
+      condition: "non_compliant_device_percentage > 20"
+      severity: "medium"
+      channels: ["email"]
+    
+    - name: "integration_failure"
+      condition: "integration_health_check_failed"
+      severity: "high"
+      channels: ["email"]
+
+# ============================================================================
+# Reporting Configuration
+# ============================================================================
+reporting:
+  # Scheduled reports
+  executive_summary:
+    enabled: true
+    frequency: "weekly"  # daily, weekly, monthly
+    day_of_week: "monday"
+    time: "09:00"
+    recipients:
+      - "leadership@yourdomain.com"
+  
+  compliance_report:
+    enabled: true
+    frequency: "monthly"
+    day_of_month: 1
+    time: "08:00"
+    recipients:
+      - "compliance@yourdomain.com"
+  
+  incident_report:
+    enabled: true
+    frequency: "weekly"
+    day_of_week: "friday"
+    time: "17:00"
+    recipients:
+      - "soc@yourdomain.com"
+  
+  # Report storage
+  storage_path: "/var/reports/zerotrust"
+  retention_days: 365
+
+# ============================================================================
+# Advanced Settings
+# ============================================================================
+advanced:
+  # Performance tuning
+  worker_threads: 10
+  batch_size: 100
+  cache_ttl_seconds: 300
+  
+  # Feature flags
+  feature_flags:
+    ml_based_anomaly_detection: false
+    predictive_risk_scoring: false
+    automated_incident_response: true
+    user_behavior_analytics: false
+  
+  # Debug settings
+  debug_mode: false
+  verbose_logging: false
+  log_api_requests: false
+  log_api_responses: false
+
