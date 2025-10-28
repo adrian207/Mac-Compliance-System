@@ -218,19 +218,49 @@ actions:
 
 ## Monitoring and Analytics
 
-**Real-Time Dashboards**
-- Fleet-wide security posture overview
-- Individual device risk tracking
-- Compliance status and trends
-- Active threats and incidents
+### Grafana Dashboards
 
-**Alerting and Notifications**
+The platform includes **4 pre-built Grafana dashboards** for comprehensive monitoring:
+
+**📊 Device Risk Overview**
+- Real-time device risk scores and trends
+- Risk level distribution across your fleet
+- Top high-risk devices requiring attention
+- Risk factor analysis by category
+
+**✅ Compliance Monitoring**
+- Overall compliance posture tracking
+- Policy violation detection and trending
+- Compliance score monitoring by device
+- Critical violation alerting
+
+**⚡ System Health & Performance**
+- API performance metrics (latency, throughput)
+- Database query performance
+- System resource utilization
+- Integration health monitoring
+
+**🔒 Security Events & Threats**
+- Real-time security event tracking
+- Threat indicator detection
+- Alert monitoring by severity
+- Security incident visualization
+
+**Quick Setup:**
+```bash
+# Import dashboards into your Grafana instance
+# See grafana/README.md for detailed instructions
+```
+
+For complete setup instructions and dashboard documentation, see [`grafana/README.md`](grafana/README.md).
+
+### Alerting and Notifications
 - High-risk device alerts
 - Compliance violations
 - Security event notifications
 - Workflow execution status
 
-**Reporting**
+### Reporting
 - Executive security summaries
 - Risk reduction metrics
 - Compliance audit reports
@@ -317,7 +347,7 @@ actions:
 ### Planned Features
 
 - [ ] **Automated Database Migration System** - Seamless database schema updates
-- [ ] **Pre-built Grafana Dashboards** - Ready-to-use monitoring dashboards
+- [x] **Pre-built Grafana Dashboards** - Ready-to-use monitoring dashboards (4 dashboards available)
 - [ ] **Telemetry Agent Installer** - Simplified agent deployment to endpoints
 - [ ] **Advanced Behavioral Analytics** - Machine learning-based user behavior analysis
 - [ ] **Anomaly Detection** - AI-powered threat detection
