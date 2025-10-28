@@ -35,6 +35,11 @@ This is the initial beta release of the **Mac OS Zero Trust Endpoint Security Pl
 
 ### Monitoring & Alerting
 - **Prometheus Metrics** - 20+ platform metrics for monitoring
+- **Pre-built Grafana Dashboards** - 4 production-ready monitoring dashboards
+  - Device Risk Overview - Risk scores, trends, and factor analysis
+  - Compliance Monitoring - Compliance status and violation tracking
+  - System Health & Performance - API and database metrics
+  - Security Events & Threats - Real-time security event monitoring
 - **Multi-Channel Alerts** - Email, Slack, PagerDuty, custom webhooks
 - **Real-Time Dashboards** - Fleet-wide security posture visibility
 
@@ -69,6 +74,13 @@ monitoring/        - Metrics and alerting
 - `TESTING.md` - Testing guide
 - `docs/DEPLOYMENT.md` - Deployment guide (Local, Docker, Cloud)
 - `docs/OPERATIONS.md` - Operations manual
+- `grafana/README.md` - Grafana dashboard setup and usage guide
+
+### Monitoring Dashboards
+- `grafana/dashboards/device-risk-overview.json` - Device risk monitoring
+- `grafana/dashboards/compliance-monitoring.json` - Compliance tracking
+- `grafana/dashboards/system-health-performance.json` - Platform performance
+- `grafana/dashboards/security-events-threats.json` - Security event monitoring
 
 ### Deployment
 - `Dockerfile` - Container definition
@@ -334,8 +346,7 @@ This is a beta release. The following limitations exist:
 1. **Mac OS Only:** Currently supports Mac OS endpoints only
 2. **Integration Testing:** Requires actual API credentials to test integrations
 3. **Database Migrations:** Manual migration process (automated in future releases)
-4. **Monitoring Dashboards:** Grafana dashboards to be included in v1.0
-5. **Agent Deployment:** Telemetry agent must be deployed separately
+4. **Agent Deployment:** Telemetry agent must be deployed separately
 
 ---
 
@@ -343,7 +354,7 @@ This is a beta release. The following limitations exist:
 
 ### Planned Features
 - [ ] Automated database migration system
-- [ ] Pre-built Grafana dashboards
+- [x] Pre-built Grafana dashboards **(✅ Completed - 4 dashboards available)**
 - [ ] Telemetry agent installer
 - [ ] Advanced behavioral analytics
 - [ ] Machine learning-based anomaly detection
