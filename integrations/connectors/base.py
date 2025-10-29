@@ -252,17 +252,21 @@ class BaseIntegrationConnector(ABC):
         """Check and enforce rate limiting."""
         now = time.time()
         
+        # Get rate limit settings with defaults
+        rate_limit_period = getattr(self.integration, 'rate_limit_period_seconds', 60) or 60
+        rate_limit_requests = getattr(self.integration, 'rate_limit_requests', 100) or 100
+        
         # Remove old timestamps
-        cutoff = now - self.integration.rate_limit_period_seconds
+        cutoff = now - rate_limit_period
         self._request_timestamps = [
             ts for ts in self._request_timestamps if ts > cutoff
         ]
         
         # Check if limit exceeded
-        if len(self._request_timestamps) >= self.integration.rate_limit_requests:
+        if len(self._request_timestamps) >= rate_limit_requests:
             # Calculate wait time
             oldest = self._request_timestamps[0]
-            wait_time = self.integration.rate_limit_period_seconds - (now - oldest)
+            wait_time = rate_limit_period - (now - oldest)
             
             if wait_time > 0:
                 logger.info(f"Rate limit reached, waiting {wait_time:.1f}s")

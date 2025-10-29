@@ -1,0 +1,21 @@
+{
+  "name": "Production Zscaler",
+  "integration_type": "zscaler",
+  "description": "Zscaler Zero Trust Network Access",
+  "endpoint": "https://zsapi.zscaler.net",
+  "auth_type": "api_key",
+  "api_key": "YOUR_ZSCALER_API_KEY",
+  "client_id": "YOUR_ADMIN_USERNAME",
+  "client_secret": "YOUR_ADMIN_PASSWORD",
+  "sync_enabled": true,
+  "sync_interval_minutes": 30,
+  "webhook_enabled": true,
+  "webhook_secret": "YOUR_WEBHOOK_SECRET",
+  "sync_devices": true,
+  "sync_users": true,
+  "sync_policies": true,
+  "push_compliance": true,
+  "push_risk_scores": true,
+  "enabled": true
+}
+

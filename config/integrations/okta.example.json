@@ -1,0 +1,19 @@
+{
+  "name": "Production Okta",
+  "integration_type": "okta",
+  "description": "Okta Identity and SSO",
+  "endpoint": "https://YOUR_DOMAIN.okta.com",
+  "auth_type": "api_key",
+  "api_key": "YOUR_OKTA_SSWS_TOKEN",
+  "sync_enabled": true,
+  "sync_interval_minutes": 30,
+  "webhook_enabled": true,
+  "webhook_secret": "YOUR_WEBHOOK_SECRET",
+  "sync_devices": true,
+  "sync_users": true,
+  "sync_policies": true,
+  "push_compliance": true,
+  "push_risk_scores": false,
+  "enabled": true
+}
+

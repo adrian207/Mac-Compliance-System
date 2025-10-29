@@ -1,0 +1,19 @@
+{
+  "name": "Production Kandji",
+  "integration_type": "kandji",
+  "description": "Kandji MDM for Mac device management",
+  "endpoint": "https://YOUR_TENANT.api.kandji.io",
+  "auth_type": "bearer",
+  "api_key": "YOUR_KANDJI_API_TOKEN",
+  "sync_enabled": true,
+  "sync_interval_minutes": 15,
+  "webhook_enabled": true,
+  "webhook_secret": "YOUR_WEBHOOK_SECRET",
+  "sync_devices": true,
+  "sync_users": true,
+  "sync_policies": true,
+  "push_compliance": false,
+  "push_risk_scores": false,
+  "enabled": true
+}
+
