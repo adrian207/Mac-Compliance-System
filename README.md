@@ -391,17 +391,18 @@ For complete migration guide, see [`docs/DATABASE_MIGRATIONS.md`](docs/DATABASE_
 - [ ] **SIEM Integration** - Splunk, Elastic Stack, and other SIEM connectors
 - [ ] **Custom Policy Builder** - Web UI for creating custom compliance policies
 - [ ] **Automated Remediation Workflows** - Self-healing security controls
-- [ ] **Enhanced Reporting** - Executive dashboards and compliance reports
+- [x] **Enhanced Reporting & Analytics** - Executive dashboards, compliance reports, automated scheduling, email delivery
 - [ ] **Multi-platform Support** - Windows and Linux endpoint support
 
 ### Target Release: Q1 2026
 
-**Current Status:** v0.9.3  
+**Current Status:** v0.9.4  
 **Next Milestone:** v0.9.5 (Feature Complete Beta)  
 **v1.0 GA:** Q1 2026
 
 See release notes:
-- `RELEASE_NOTES_v0.9.3.md` - Latest (Telemetry Agent Installer)
+- `RELEASE_NOTES_v0.9.4.md` - Latest (Enhanced Reporting & Analytics)
+- `RELEASE_NOTES_v0.9.3.md` - Telemetry Agent Installer
 - `RELEASE_NOTES_v0.9.2.md` - Automated Database Migrations
 - `RELEASE_NOTES_v0.9.1.md` - Grafana Dashboards
 - `RELEASE_NOTES_v0.9.0.md` - Initial Beta Release
@@ -421,7 +422,7 @@ Adrian Johnson <adrian207@gmail.com>
 
 ---
 
-**Platform Version:** 0.9.3  
+**Platform Version:** 0.9.4  
 **Last Updated:** October 29, 2025  
 **Author:** Adrian Johnson <adrian207@gmail.com>
 
