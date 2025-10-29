@@ -1,0 +1,25 @@
+{
+    "api_endpoint": "http://localhost:8000",
+    "api_key": null,
+    "device_id": null,
+    "device_name": "MacBook-Pro",
+    "collection_interval": 300,
+    "collectors_enabled": {
+        "system_info": true,
+        "security_status": true,
+        "network_info": true,
+        "process_info": true,
+        "software_inventory": true
+    },
+    "log_level": "INFO",
+    "retry_attempts": 3,
+    "retry_backoff": 1,
+    "connection_timeout": 30,
+    "verify_ssl": true,
+    "agent_metadata": {
+        "environment": "production",
+        "tags": [],
+        "notes": ""
+    }
+}
+
