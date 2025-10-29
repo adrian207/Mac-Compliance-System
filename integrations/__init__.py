@@ -1,11 +1,22 @@
 """
-Security Tool Integrations
+Security Tool Integration Module
 
 Author: Adrian Johnson <adrian207@gmail.com>
 
-Integrations with endpoint and network security tools.
+Integrates with enterprise security tools including Kandji, Zscaler,
+Seraphic, Okta, and CrowdStrike for unified Zero Trust security.
 """
 
-__version__ = "1.0.0"
-__author__ = "Adrian Johnson <adrian207@gmail.com>"
+from integrations.models import (
+    Integration,
+    IntegrationSync,
+    IntegrationType,
+    SyncStatus
+)
 
+__all__ = [
+    "Integration",
+    "IntegrationSync",
+    "IntegrationType",
+    "SyncStatus"
+]

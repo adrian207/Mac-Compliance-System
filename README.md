@@ -386,7 +386,7 @@ For complete migration guide, see [`docs/DATABASE_MIGRATIONS.md`](docs/DATABASE_
 - [x] **Telemetry Agent Installer** - Simplified agent deployment to endpoints (Hybrid Munki integration)
 - [x] **Advanced Behavioral Analytics & Anomaly Detection** - ML/statistical threat detection with baseline profiling
 - [x] **SIEM Integration** - Splunk, Elastic Stack, Syslog/CEF connectors with batching and retry
-- [ ] **Additional Integration Connectors** - Support for more security tools  
+- [x] **Additional Integration Connectors** - Kandji, Zscaler, Seraphic, Okta, CrowdStrike integrations
 - [ ] **Mobile App for Alerts** - iOS/Android app for security notifications
 - [ ] **Custom Policy Builder** - Web UI for creating custom compliance policies
 - [ ] **Automated Remediation Workflows** - Self-healing security controls
@@ -395,12 +395,13 @@ For complete migration guide, see [`docs/DATABASE_MIGRATIONS.md`](docs/DATABASE_
 
 ### Target Release: Q1 2026
 
-**Current Status:** v0.9.6  
+**Current Status:** v0.9.7  
 **Next Milestone:** v0.9.5 (Feature Complete Beta)  
 **v1.0 GA:** Q1 2026
 
 See release notes:
-- `RELEASE_NOTES_v0.9.6.md` - Latest (SIEM Integration)
+- `RELEASE_NOTES_v0.9.7.md` - Latest (Security Tool Integrations)
+- `RELEASE_NOTES_v0.9.6.md` - SIEM Integration
 - `RELEASE_NOTES_v0.9.5.md` - Behavioral Analytics & Anomaly Detection
 - `RELEASE_NOTES_v0.9.4.md` - Enhanced Reporting & Analytics
 - `RELEASE_NOTES_v0.9.3.md` - Telemetry Agent Installer
@@ -423,7 +424,7 @@ Adrian Johnson <adrian207@gmail.com>
 
 ---
 
-**Platform Version:** 0.9.6  
+**Platform Version:** 0.9.7  
 **Last Updated:** October 29, 2025  
 **Author:** Adrian Johnson <adrian207@gmail.com>
 
