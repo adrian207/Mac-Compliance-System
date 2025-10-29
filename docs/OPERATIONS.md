@@ -33,6 +33,9 @@ tail -f logs/platform.log
 - Integration API response times
 - Database connection pool utilization
 - Alert delivery success rate
+- **Anomaly detection rate (v0.9.5+)**
+- **Behavioral baseline coverage (v0.9.5+)**
+- **False positive rate (v0.9.5+)**
 
 ### Dashboard Access
 
@@ -74,6 +77,253 @@ tail -f logs/platform.log
 **Slack:** Webhook integration  
 **PagerDuty:** For critical alerts  
 **Webhook:** Custom integrations
+
+---
+
+## Anomaly Detection and Behavioral Analytics (v0.9.5+)
+
+### Monitoring Anomaly Detection
+
+**Check Detection Statistics:**
+
+```bash
+# Get real-time detection stats
+curl http://localhost:8000/api/v1/analytics/statistics
+
+# View analytics summary
+curl http://localhost:8000/api/v1/analytics/summary
+```
+
+**Key Metrics to Monitor:**
+- Detection rate (anomalies per telemetry record)
+- False positive rate (< 5% target)
+- Anomalies by severity (critical, high, medium, low)
+- Anomalies by type (authentication, network, process, system)
+- Baseline coverage (% of devices with baselines)
+
+### Managing Anomalies
+
+**List Recent Anomalies:**
+
+```bash
+# All unresolved anomalies
+curl "http://localhost:8000/api/v1/analytics/anomalies?resolved=false&limit=100"
+
+# Critical severity only
+curl "http://localhost:8000/api/v1/analytics/anomalies?severity=critical"
+
+# Specific device
+curl "http://localhost:8000/api/v1/analytics/anomalies?device_id=DEV-123"
+```
+
+**Investigate Anomaly:**
+
+```bash
+# Get full anomaly details
+curl http://localhost:8000/api/v1/analytics/anomalies/ANO-ABC123DEF456
+
+# Check related telemetry data
+# Review observed vs. expected values
+# Examine detection method and confidence
+# Read recommended actions
+```
+
+**Resolve Anomaly:**
+
+```bash
+# Mark as resolved after investigation
+curl -X POST http://localhost:8000/api/v1/analytics/anomalies/ANO-ABC123DEF456/resolve \
+  -H "Content-Type: application/json" \
+  -d '{
+    "resolved_by": "analyst@example.com",
+    "notes": "Confirmed false alarm - scheduled maintenance activity"
+  }'
+```
+
+**Mark False Positive:**
+
+```bash
+# System will learn from this feedback
+curl -X POST http://localhost:8000/api/v1/analytics/anomalies/ANO-ABC123DEF456/false-positive
+```
+
+### Baseline Management
+
+**Check Baseline Status:**
+
+```bash
+# List all baselines
+curl http://localhost:8000/api/v1/analytics/baselines
+
+# Check specific device
+curl "http://localhost:8000/api/v1/analytics/baselines?device_id=DEV-123"
+```
+
+**Build New Baselines:**
+
+```bash
+# For new device (after 30 days of data collection)
+curl -X POST http://localhost:8000/api/v1/analytics/baselines/build \
+  -H "Content-Type: application/json" \
+  -d '{
+    "device_id": "DEV-123",
+    "baseline_type": "authentication",
+    "force_refresh": false
+  }'
+
+# Rebuild all baseline types
+for type in authentication network process system; do
+  curl -X POST http://localhost:8000/api/v1/analytics/baselines/build \
+    -H "Content-Type: application/json" \
+    -d "{\"device_id\": \"DEV-123\", \"baseline_type\": \"$type\"}"
+done
+```
+
+**Refresh Stale Baselines:**
+
+```bash
+# Refresh baselines older than 7 days
+python scripts/refresh_baselines.py --days 7
+
+# Force refresh for specific device
+python scripts/refresh_baselines.py --device DEV-123 --force
+```
+
+### Profile Management
+
+**View Device Profiles:**
+
+```bash
+# Get device behavioral profile
+curl http://localhost:8000/api/v1/analytics/profiles/DEV-123
+
+# Profile includes:
+# - Activity regularity score
+# - Risk appetite score  
+# - Typical behavior patterns
+# - Confidence score
+```
+
+**Rebuild Profiles:**
+
+```bash
+# After significant behavior changes
+curl -X POST http://localhost:8000/api/v1/analytics/profiles/DEV-123/build
+```
+
+### Alert Management
+
+**Test Alert Delivery:**
+
+```bash
+# Send test alert
+python scripts/test_alert.py --recipients soc@example.com
+
+# Check alert configuration
+python scripts/check_smtp.py
+```
+
+**Configure Alert Recipients:**
+
+```yaml
+# In config/config.yaml
+alerting:
+  recipients:
+    default:
+      - soc@example.com
+    critical:
+      - soc@example.com
+      - ciso@example.com
+      - oncall@example.com
+```
+
+### Troubleshooting Analytics
+
+**No Anomalies Detected:**
+
+```bash
+# Check if baselines exist
+curl http://localhost:8000/api/v1/analytics/baselines | jq '.[] | .device_id'
+
+# Verify detection engine is processing telemetry
+tail -f logs/analytics.log | grep "process_telemetry"
+
+# Check detection thresholds
+cat config/config.yaml | grep -A 5 "thresholds:"
+```
+
+**Too Many False Positives:**
+
+```bash
+# Review false positive rate
+curl http://localhost:8000/api/v1/analytics/statistics | jq '.false_positive_rate'
+
+# Adjust z-score threshold (increase from 3.0 to 4.0)
+# Edit config/config.yaml:
+analytics:
+  thresholds:
+    z_score: 4.0  # Less sensitive
+
+# Restart platform to apply changes
+docker-compose restart platform
+```
+
+**Alerts Not Sending:**
+
+```bash
+# Test SMTP configuration
+python scripts/test_smtp.py
+
+# Check alert logs
+tail -f logs/alerting.log
+
+# Verify anomaly severity meets threshold
+curl http://localhost:8000/api/v1/analytics/anomalies/ANO-ABC123 | jq '.anomaly_severity'
+```
+
+### Performance Tuning
+
+**For High-Volume Environments:**
+
+```yaml
+# In config/config.yaml
+analytics:
+  performance:
+    batch_size: 100  # Process telemetry in batches
+    batch_interval_seconds: 60
+    worker_threads: 4  # Parallel processing
+    cache_baselines: true  # Cache frequently accessed baselines
+```
+
+**Database Optimization for Analytics:**
+
+```sql
+-- Add indexes for analytics queries
+CREATE INDEX idx_anomalies_device_detected ON anomaly_detections(device_id, detected_at);
+CREATE INDEX idx_anomalies_severity_resolved ON anomaly_detections(anomaly_severity, is_resolved);
+CREATE INDEX idx_baselines_device_type ON behavior_baselines(device_id, baseline_type);
+```
+
+### Regular Maintenance
+
+**Weekly Tasks:**
+- Review unresolved anomalies
+- Mark confirmed false positives
+- Refresh baselines for devices with significant changes
+- Review detection statistics and adjust thresholds
+
+**Monthly Tasks:**
+- Rebuild baselines for all devices
+- Rebuild device profiles
+- Analyze false positive trends
+- Retrain ML models (if using ML detection)
+- Archive resolved anomalies older than 90 days
+
+**Quarterly Tasks:**
+- Review and update detection rules
+- Audit alert recipient lists
+- Performance optimization review
+- Capacity planning for baseline storage
 
 ---
 

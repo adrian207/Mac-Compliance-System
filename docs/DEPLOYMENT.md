@@ -590,6 +590,165 @@ psql -c "ANALYZE;"
 
 ---
 
+## Behavioral Analytics Configuration (v0.9.5+)
+
+### Analytics and Anomaly Detection Setup
+
+**Enable Analytics Module:**
+
+```yaml
+analytics:
+  enabled: true
+  
+  # Detection methods
+  detection:
+    statistical: true
+    machine_learning: true  # Set to false to disable ML detection
+    rule_based: true
+  
+  # Baseline profiling
+  baselines:
+    learning_period_days: 30
+    min_samples: 10
+    auto_build: true  # Automatically build baselines for new devices
+    refresh_interval_days: 7
+  
+  # Device profiling
+  profiles:
+    analysis_period_days: 90
+    min_samples: 20
+    auto_build: true
+  
+  # Detection thresholds
+  thresholds:
+    z_score: 3.0  # Standard deviations for statistical detection
+    ml_contamination: 0.05  # Expected proportion of anomalies
+    ml_threshold: 0.7  # ML anomaly score threshold
+```
+
+### Alert Configuration
+
+**Email Alerting Setup:**
+
+```yaml
+alerting:
+  enabled: true
+  
+  # Email configuration
+  email:
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_user: "alerts@example.com"
+    smtp_password: "${SMTP_PASSWORD}"  # Use environment variable
+    use_tls: true
+    from_address: "zerotrust-alerts@example.com"
+  
+  # Alert recipients
+  recipients:
+    default:
+      - "soc@example.com"
+      - "security@example.com"
+    critical:
+      - "soc@example.com"
+      - "ciso@example.com"
+  
+  # Alert settings
+  settings:
+    min_severity: "medium"  # Only alert on medium and higher
+    batch_alerts: true  # Group alerts by severity
+    alert_throttle_minutes: 15  # Prevent alert spam
+```
+
+### Initial Baseline Building
+
+After deployment, build baselines for existing devices:
+
+```bash
+# Build baselines for all devices
+python scripts/build_baselines.py --all
+
+# Build baselines for specific device
+python scripts/build_baselines.py --device DEV-123
+
+# Build specific baseline type
+python scripts/build_baselines.py --device DEV-123 --type authentication
+```
+
+Or use the API:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/analytics/baselines/build \
+  -H "Content-Type: application/json" \
+  -d '{
+    "device_id": "DEV-123",
+    "baseline_type": "authentication",
+    "force_refresh": false
+  }'
+```
+
+### ML Model Configuration (Optional)
+
+[Inference] To enable full ML-based detection with trained models:
+
+```yaml
+analytics:
+  ml:
+    enabled: true
+    model_path: "models/anomaly_detector.pkl"
+    feature_count: 12
+    retrain_interval_days: 30
+```
+
+Train the ML model:
+
+```bash
+# Train on historical data
+python scripts/train_ml_model.py \
+  --days 90 \
+  --output models/anomaly_detector.pkl
+```
+
+### Performance Tuning
+
+**For High-Volume Environments:**
+
+```yaml
+analytics:
+  performance:
+    # Process telemetry in batches
+    batch_size: 100
+    batch_interval_seconds: 60
+    
+    # Background task workers
+    worker_threads: 4
+    
+    # Baseline cache
+    cache_baselines: true
+    cache_ttl_minutes: 60
+```
+
+### Monitoring Analytics System
+
+**Check Detection Statistics:**
+
+```bash
+curl http://localhost:8000/api/v1/analytics/statistics
+```
+
+**View Recent Anomalies:**
+
+```bash
+curl "http://localhost:8000/api/v1/analytics/anomalies?limit=50&resolved=false"
+```
+
+**Get Analytics Summary:**
+
+```bash
+curl http://localhost:8000/api/v1/analytics/summary
+```
+
+---
+
 ## Support
 
 For deployment assistance, contact:  
