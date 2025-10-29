@@ -104,8 +104,9 @@ pip install -r requirements.txt
 cp config/config.example.yaml config/config.yaml
 # Edit config.yaml with your credentials and settings
 
-# Initialize database
+# Initialize database and run migrations
 python scripts/init_database.py
+python scripts/migrate.py upgrade
 
 # Run initial setup
 python scripts/setup.py
@@ -320,6 +321,40 @@ For complete setup instructions and dashboard documentation, see [`grafana/READM
 - ISO 27001 controls
 - SOC 2 compliance support
 
+## Database Management
+
+The platform uses **Alembic** for automated database schema migrations, enabling seamless upgrades between versions.
+
+### Migration Commands
+
+```bash
+# Check current database version
+python scripts/migrate.py current
+
+# Apply all pending migrations
+python scripts/migrate.py upgrade
+
+# Create a new migration (after model changes)
+python scripts/migrate.py create -m "Add new field"
+
+# Rollback last migration
+python scripts/migrate.py downgrade
+
+# View migration history
+python scripts/migrate.py history
+```
+
+### Key Features
+- **Automated Schema Evolution** - Safe database upgrades across versions
+- **Version Control** - All schema changes tracked in code
+- **Rollback Support** - Downgrade to previous versions if needed
+- **Auto-generation** - Detect model changes automatically
+- **Production Ready** - Supports offline SQL generation for DBA review
+
+For complete migration guide, see [`docs/DATABASE_MIGRATIONS.md`](docs/DATABASE_MIGRATIONS.md).
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
@@ -346,7 +381,7 @@ For complete setup instructions and dashboard documentation, see [`grafana/READM
 
 ### Planned Features
 
-- [ ] **Automated Database Migration System** - Seamless database schema updates
+- [x] **Automated Database Migration System** - Seamless database schema updates (Alembic-based)
 - [x] **Pre-built Grafana Dashboards** - Ready-to-use monitoring dashboards (4 dashboards available)
 - [ ] **Telemetry Agent Installer** - Simplified agent deployment to endpoints
 - [ ] **Advanced Behavioral Analytics** - Machine learning-based user behavior analysis
@@ -361,12 +396,13 @@ For complete setup instructions and dashboard documentation, see [`grafana/READM
 
 ### Target Release: Q1 2026
 
-**Current Status:** v0.9.1  
+**Current Status:** v0.9.2  
 **Next Milestone:** v0.9.5 (Feature Complete Beta)  
 **v1.0 GA:** Q1 2026
 
 See release notes:
-- `RELEASE_NOTES_v0.9.1.md` - Latest (Grafana Dashboards)
+- `RELEASE_NOTES_v0.9.2.md` - Latest (Automated Database Migrations)
+- `RELEASE_NOTES_v0.9.1.md` - Grafana Dashboards
 - `RELEASE_NOTES_v0.9.0.md` - Initial Beta Release
 
 ## Contributing
@@ -384,7 +420,7 @@ Adrian Johnson <adrian207@gmail.com>
 
 ---
 
-**Platform Version:** 0.9.1  
-**Last Updated:** October 28, 2025  
+**Platform Version:** 0.9.2  
+**Last Updated:** October 29, 2025  
 **Author:** Adrian Johnson <adrian207@gmail.com>
 
