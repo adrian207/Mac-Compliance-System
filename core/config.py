@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -181,9 +181,10 @@ class Config(BaseSettings):
     # Raw config for dynamic access
     _raw_config: Dict[str, Any] = {}
     
-    class Config:
-        env_prefix = "ZEROTRUST_"
-        case_sensitive = False
+    model_config = ConfigDict(
+        env_prefix="ZEROTRUST_",
+        case_sensitive=False
+    )
 
 
 def load_config(config_path: Optional[str] = None) -> Config:
